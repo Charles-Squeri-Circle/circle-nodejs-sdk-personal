@@ -40,24 +40,19 @@ async function createCryptoPayment() {
   return createCryptoPaymentRes.data.data?.id;
 }
 
-async function getCryptoPayment(id: any) {
-  return await circle.paymentIntents.getPaymentIntent(id);
-}
-
 async function getCryptoPaymentAddress(id: any) {
-  let cryptoPayment = await getCryptoPayment(id);
-  if (cryptoPayment.data.data?.paymentMethods[0].address === undefined) {
-    await delay(5000);
-    cryptoPayment = await getCryptoPayment(id);
-    return cryptoPayment.data.data?.paymentMethods[0].address;
-  } else {
-    return cryptoPayment.data.data?.paymentMethods[0].address;
-  }
+  let cryptoPayment = await circle.paymentIntents.getPaymentIntent(id);
+  do {
+    await delay(500);
+    cryptoPayment = await circle.paymentIntents.getPaymentIntent(id);
+  } while (cryptoPayment.data.data?.paymentMethods[0].address === undefined)
+  return cryptoPayment.data.data?.paymentMethods[0].address;
 }
 
-async function cryptoPayment() {
+async function createAndAcquireCryptoPaymentAddress() {
   const cryptoPaymentId = await createCryptoPayment();
-  return await getCryptoPaymentAddress(cryptoPaymentId);
+  const cryptoPaymentAddress = await getCryptoPaymentAddress(cryptoPaymentId);
+  console.log(cryptoPaymentAddress);
 }
 
-cryptoPayment().then(result => console.log(result));
+createAndAcquireCryptoPaymentAddress();

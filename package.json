@@ -12,6 +12,7 @@
     "@circle-fin/circle-sdk": "^1.0.1",
     "atob": "^2.1.2",
     "btoa": "^1.2.1",
+    "dotenv": "^16.0.3",
     "openpgp": "^5.5.0",
     "ts-node": "^10.9.1",
     "uuid": "^9.0.0"

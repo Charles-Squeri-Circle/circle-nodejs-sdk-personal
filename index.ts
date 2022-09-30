@@ -1,16 +1,15 @@
 import {
   Circle,
   CircleEnvironments,
-  PaymentIntent,
-  CryptoPaymentsMoney,
-  PaymentMethodBlockchain,
-} from '@circle-fin/circle-sdk';
-import { v4 as uuidv4 } from 'uuid';
+} from "@circle-fin/circle-sdk";
+import { v4 as uuidv4 } from "uuid";
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 // Initialize API driver
 const circle = new Circle(
-  '<your-api-key>',
-  CircleEnvironments.sandbox // API base url
+  process.env.API_KEY as string,
+  CircleEnvironments.sandbox
 );
 
 function delay(time: number) {
@@ -18,30 +17,27 @@ function delay(time: number) {
 }
 
 async function createCryptoPayment() {
-  const cryptoPaymentAmount: CryptoPaymentsMoney = {
-    amount: '1.11',
-    currency: 'USD',
-  };
-
-  const cryptoPaymentPaymentMethod: PaymentMethodBlockchain = {
-    chain: 'SOL',
-    type: 'blockchain',
-  };
-
-  const cryptoPaymentReq: PaymentIntent = {
-    idempotencyKey: uuidv4(),
-    amount: cryptoPaymentAmount,
-    settlementCurrency: 'USD',
-    paymentMethods: [cryptoPaymentPaymentMethod],
-  };
-
   const createCryptoPaymentRes =
-    await circle.paymentIntents.createPaymentIntent(cryptoPaymentReq);
+    await circle.paymentIntents.createPaymentIntent({
+      idempotencyKey: uuidv4(),
+      amount: {
+        amount: "3.14",
+        currency: "USD",
+      },
+      settlementCurrency: "USD",
+      paymentMethods: [
+        {
+          chain: "SOL",
+          type: "blockchain",
+        },
+      ],
+    });
   return createCryptoPaymentRes.data.data?.id;
 }
 
 async function getCryptoPaymentAddress(id: any) {
   let cryptoPayment = await circle.paymentIntents.getPaymentIntent(id);
+
   do {
     await delay(500);
     cryptoPayment = await circle.paymentIntents.getPaymentIntent(id);

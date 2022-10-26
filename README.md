@@ -1,2 +1,2 @@
 # circle-nodejs-sdk
-run command `npx ts-node index.ts`
+run command `npx ts-node *.ts` for example `npx ts-node exListBalances.ts`

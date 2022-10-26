@@ -6,12 +6,16 @@ const openpgp = require('openpgp');
 const atob = require('atob');
 const btoa = require('btoa');
 
+// Create a file named .env within the root of the project that has one line item with you API Key like so
+// API_KEY="???"
+import * as dotenv from "dotenv";
+dotenv.config();
+
 // Initialize API driver
 const circle = new Circle(
-    '<your-api-key>',
-    CircleEnvironments.sandbox      // API base url
+  process.env.API_KEY as string,
+  CircleEnvironments.sandbox
 );
-
 
 // This function can be removed once integrated with client app
 async function encryptCard() {

@@ -16,6 +16,7 @@ function delay(time: number) {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
 
+// POST: /v1/paymentIntents
 async function createCryptoPayment() {
   const createCryptoPaymentRes =
     await circle.paymentIntents.createPaymentIntent({
@@ -35,9 +36,11 @@ async function createCryptoPayment() {
   return createCryptoPaymentRes.data.data?.id;
 }
 
+// GET: /v1/paymentIntents/:id
 async function getCryptoPaymentAddress(id: any) {
   let cryptoPayment = await circle.paymentIntents.getPaymentIntent(id);
 
+  // Polling
   do {
     await delay(500);
     cryptoPayment = await circle.paymentIntents.getPaymentIntent(id);
